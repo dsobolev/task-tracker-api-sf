@@ -28,13 +28,6 @@ class Task
         return $this->id;
     }
 
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
     public function getTitle(): string
     {
         return $this->title;
@@ -59,14 +52,14 @@ class Task
         return $this;
     }
 
-    public function getStatus(): int
+    public function getStatus(): TaskStatus
     {
-        return $this->status;
+        return TaskStatus::from($this->status);
     }
 
-    public function setStatus(int $status): static
+    public function setStatus(TaskStatus $status): static
     {
-        $this->status = $status;
+        $this->status = $status->value;
 
         return $this;
     }
