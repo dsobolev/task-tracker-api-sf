@@ -16,6 +16,8 @@ services:
       # The two next lines can be removed after initial installation
       SYMFONY_VERSION: ${SYMFONY_VERSION:-}
       STABILITY: ${STABILITY:-stable}
+      CADDY_EXTRA_CONFIG: ${CADDY_EXTRA_CONFIG}
+      CADDY_SERVER_EXTRA_DIRECTIVES: ${CADDY_SERVER_EXTRA_DIRECTIVES}
     volumes:
       - caddy_data:/data
       - caddy_config:/config
