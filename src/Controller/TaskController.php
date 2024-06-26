@@ -11,7 +11,7 @@ class TaskController extends AbstractController
 {
     public function __construct(private TaskRepository $taskRepo) { }
 
-    #[Route('/tasks', name: 'list_tasks')]
+    #[Route('/tasks', name: 'tasks_list')]
     public function index(): JsonResponse
     {
         $result = [];
@@ -21,11 +21,24 @@ class TaskController extends AbstractController
             $result[] = [
                 'id' => $task->getId(),
                 'title' => $task->getTitle(),
-                'description' => $task->getDescription(),
                 'status' => $task->getStatus()->value,
             ];
         }
 
         return $this->json(['tasks' => $result]);
+    }
+
+    #[Route('/tasks/{id}', name: 'single_task')]
+    public function single(int $id): JsonResponse
+    {
+        $task = $this->taskRepo->find($id);
+        $result = [
+            'id' => $task->getId(),
+            'title' => $task->getTitle(),
+            'description' => $task->getDescription(),
+            'status' => $task->getStatus()->value,
+        ];
+
+        return $this->json(['taskData' => $result]);
     }
 }
