@@ -36,20 +36,6 @@ class TaskController extends AbstractController
         return $this->json(['tasks' => $result]);
     }
 
-    #[Route('/tasks/{id}', methods: ['GET'], name: 'single_task')]
-    public function single(int $id): JsonResponse
-    {
-        $task = $this->taskRepo->find($id);
-        $result = [
-            'id' => $task->getId(),
-            'title' => $task->getTitle(),
-            'description' => $task->getDescription(),
-            'status' => $task->getStatus()->value,
-        ];
-
-        return $this->json(['taskData' => $result]);
-    }
-
     #[Route('tasks', methods: ['POST'], name: 'new_task')]
     public function create(Request $request): JsonResponse
     {
@@ -73,6 +59,20 @@ class TaskController extends AbstractController
         $this->em->flush();
 
         return $this->json(['id' => '']);
+    }
+
+    #[Route('/tasks/{id}', methods: ['GET'], name: 'single_task')]
+    public function single(int $id): JsonResponse
+    {
+        $task = $this->taskRepo->find($id);
+        $result = [
+            'id' => $task->getId(),
+            'title' => $task->getTitle(),
+            'description' => $task->getDescription(),
+            'status' => $task->getStatus()->value,
+        ];
+
+        return $this->json(['taskData' => $result]);
     }
 
     #[Route('/tasks/{id}', methods: ['PUT'], name: 'task_edit')]
