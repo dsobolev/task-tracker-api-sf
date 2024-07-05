@@ -19,7 +19,7 @@ class TaskController extends AbstractController
         private EntityManagerInterface $em
     ) { }
 
-    #[Route('/tasks', name: 'tasks_list')]
+    #[Route('/tasks', methods: ['GET'], name: 'tasks_list')]
     public function index(): JsonResponse
     {
         $result = [];
@@ -36,7 +36,7 @@ class TaskController extends AbstractController
         return $this->json(['tasks' => $result]);
     }
 
-    #[Route('/tasks/{id}', name: 'single_task')]
+    #[Route('/tasks/{id}', methods: ['GET'], name: 'single_task')]
     public function single(int $id): JsonResponse
     {
         $task = $this->taskRepo->find($id);
@@ -50,7 +50,7 @@ class TaskController extends AbstractController
         return $this->json(['taskData' => $result]);
     }
 
-    #[Route('task/new'), name: 'new_task']
+    #[Route('tasks', methods: ['POST'], name: 'new_task')]
     public function create(Request $request): JsonResponse
     {
         $title = $request->get('title');
@@ -73,5 +73,39 @@ class TaskController extends AbstractController
         $this->em->flush();
 
         return $this->json(['id' => '']);
+    }
+
+    #[Route('/tasks/{id}', methods: ['PUT'], name: 'task_edit')]
+    public function edit(int $id, Request $request): JsonResponse
+    {
+        $task = $this->taskRepo->find($id);
+        if (is_null($task)) {
+            return $this->json(['msg' => 'Entity not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $statusVal = $request->get('status');
+        if (!is_null($statusVal)) {
+            try {
+                $status = TaskStatus::from($statusVal);
+            } catch (\ValueError $e) {
+                return $this->json(['msg' => 'Status is not valid'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $task->setStatus($status);
+        }
+
+        $title = $request->get('title');
+        if (!empty($title)) {
+            $task->setTitle($title);
+        }
+
+        $description = $request->get('description');
+        if (!empty($description)) {
+            $task->setDescription($description);
+        }
+
+        $this->em->flush();
+
+        return $this->json([], Response::HTTP_OK);
     }
 }
