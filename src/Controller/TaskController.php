@@ -36,17 +36,19 @@ class TaskController extends AbstractController
         return $this->json(['tasks' => $result]);
     }
 
-    #[Route('tasks', methods: ['POST'], name: 'new_task')]
+    #[Route('/tasks', methods: ['POST'], name: 'new_task')]
     public function create(Request $request): JsonResponse
     {
-        $title = $request->get('title');
+        $payload = $request->getPayload();
+
+        $title = $payload->get('title');
         if (empty($title)) {
             return $this->json(['msg' => 'Title field required'], Response::HTTP_BAD_REQUEST);
         }
         $task = new Task();
         $task->setTitle($title);
 
-        $description = $request->get('description');
+        $description = $payload->get('description');
         if (!empty($description)) {
             $task->setDescription($description);
         }
