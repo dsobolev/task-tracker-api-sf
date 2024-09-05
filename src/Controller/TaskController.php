@@ -85,7 +85,9 @@ class TaskController extends AbstractController
             return $this->json(['msg' => 'Entity not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $statusVal = $request->get('status');
+        $payload = $request->getPayload();
+
+        $statusVal = $payload->get('status');
         if (!is_null($statusVal)) {
             try {
                 $status = TaskStatus::from($statusVal);
@@ -96,12 +98,12 @@ class TaskController extends AbstractController
             $task->setStatus($status);
         }
 
-        $title = $request->get('title');
+        $title = $payload->get('title');
         if (!empty($title)) {
             $task->setTitle($title);
         }
 
-        $description = $request->get('description');
+        $description = $payload->get('description');
         if (!empty($description)) {
             $task->setDescription($description);
         }
